@@ -1,0 +1,3 @@
+[submodule "assets/js/Utils"]
+	path = assets/js/Utils
+	url = git@orahub.oraclecorp.com:sergio_medina/plugin-utils.git
