@@ -94,7 +94,7 @@ module.exports = function (grunt) {
       },
       dist: {
         src: [
-          'assets/js/libs/d3.v3.min.js',
+          'assets/js/externals/d3/d3.min.js',
           'assets/js/Utils/Utils.js',
           'assets/js/Utils/Utils.DataModel.js',
           'assets/js/Visualizations.Donut.js',
@@ -119,7 +119,7 @@ module.exports = function (grunt) {
       },
       watchFiles: {
         files: [pluginFile, 'data/*.csv', 'assets/*.js', 'assets/**/*.js', 'assets/*.css', 'assets/**/*.css'],
-        tasks: ['reload']
+        tasks: ['concat', 'less', 'reload']
       }
     },
     reload: {
@@ -149,7 +149,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.registerTask('server', ['connect:livereload', 'open', 'watch']);
+  grunt.registerTask('server', ['concat', 'less', 'connect:livereload', 'open', 'watch']);
 
 
   /*
