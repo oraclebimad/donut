@@ -340,6 +340,7 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
       left: 5
     },
     sizeFormat: 'currency',
+    colorLabel: ''
   };
 
   Donut.prototype.init = function () {
@@ -354,7 +355,7 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
 
     this.filters = {};
 
-    this.svg = this.container.append('svg');
+    this.svg = this.container.append('svg').attr('class', 'donut');
     svg = this.svg.node();
     this.group = this.svg.append('g').attr({
       transform: 'translate(' + this.options.width / 2 + ',' + this.options.height / 2 + ')'
@@ -377,7 +378,6 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
 
       if (path.length)
         self.toggleSelect(path[0]);
-
     });
   };
 
@@ -422,7 +422,27 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
       .attrTween('d', function (d) {
         return arcTween(d, this, self);
       });
+
+    this.renderLabel(this.options.groupLabel, d3.sum(Utils.pluck(this.data, 'size')));
     return this;
+  };
+
+  Donut.prototype.renderLabel = function (text, detail) {
+    if (!this.textLabel) {
+
+      this.textLabel = this.group.append('text').attr({
+        'class': 'label text'
+      });
+
+      this.detailLabel = this.group.append('text').attr({
+        'class': 'label detail',
+        'dy': '1.1em'
+      });
+    }
+
+    text = (text + '').toLowerCase();
+    this.textLabel.text(text);
+    this.detailLabel.text(this.options.numericFormat(detail + ''));
   };
 
   Donut.prototype.toggleSelect = function (node) {
@@ -434,9 +454,11 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
     this.group.classed('has-selected', isSelected);
     node.classed('selected', isSelected);
     if (isSelected) {
+      this.renderLabel(data.data.key, data.data.size);
       this.addFilter(data.data);
     } else {
       this.removeFilter(data.data);
+      this.renderLabel(this.options.groupLabel, d3.sum(Utils.pluck(this.data, 'size')));
     }
   };
 

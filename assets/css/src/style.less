@@ -1,3 +1,8 @@
+.donut {
+  font-family: "Helvetica Neue", Helvetica, SansSerif;
+  font-size: 16px;
+}
+
 .arc path {
   transition: opacity 500ms ease;
 }
@@ -9,5 +14,18 @@
 
   .arc.selected path {
     opacity: 1;
+  }
+}
+
+.label {
+  color: #111;
+  text-anchor: middle;
+  &.text {
+    font-size: 1em;
+    text-transform: capitalize;
+  }
+
+  &.detail {
+    font-size: .75em;
   }
 }

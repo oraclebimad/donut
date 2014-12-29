@@ -11,9 +11,9 @@
       {label: 'Raw', value: 'raw'},
       {label: 'Currency', value: 'currency'},
       {label: 'Thousands separated', value: 'thousands'}
-    ]},
+    ], value: 'thousands'},
     {key: "currencysymbol", label: "Currency Symbol", type: "string", value: ""},
-
+    {key: "grouplabel", label: "Label", type: "string", value: ""}
   ],
   remoteFiles: [
     {
@@ -35,12 +35,16 @@
   dataType: 'arrayOfArrays',
   render: function (context, container, data, fields, props) {
     var self = this;
+    var columnMeta;
     container.innerHTML = '';
     this.dataModel = new Utils.DataModel(data, fields);
     this.dataModel.indexColumns().setColumnOrder(['group']);
+    columnMeta = this.dataModel.indexedMetaData;
     this.visualization = new Visualizations.Donut(container, this.dataModel.nest().values, {
       width: props.width,
-      height: props.height
+      height: props.height,
+      groupLabel: props.groupLabel ? props.groupLabel : columnMeta.group.label,
+      numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol})
     });
     this.visualization.render();
     this.visualization.addEventListener('filter', function (filters) {

@@ -1,1 +1,1 @@
-.arc path{transition:opacity 500ms ease}.has-selected .arc path{opacity:.65}.has-selected .arc.selected path{opacity:1}
+.donut{font-family:"Helvetica Neue",Helvetica,SansSerif;font-size:16px}.arc path{transition:opacity 500ms ease}.has-selected .arc path{opacity:.65}.has-selected .arc.selected path{opacity:1}.label{color:#111;text-anchor:middle}.label.text{font-size:1em;text-transform:capitalize}.label.detail{font-size:.75em}
