@@ -148,7 +148,7 @@
     var previousData = this.path.data();
     var currentData = this.pie(this.data);
     var self = this;
-    var g;
+    var g = this.group.node();
 
     this.path = this.path.data(currentData, Donut.key);
     this.options.radius = Math.min(this.options.width, this.options.height) / 2;
@@ -167,7 +167,9 @@
       .attrTween('d', function (d) {
         return arcTween(d, this, self);
       })
-      .remove();
+      .each('end', function () {
+        g.removeChild(this.parentNode);
+      });
 
     this.path.transition()
       .duration(550)
@@ -193,8 +195,7 @@
       });
     }
 
-    text = (text + '').toLowerCase();
-    this.textLabel.text(text);
+    this.textLabel.text(Utils.capitalize(text));
     this.detailLabel.text(this.options.numericFormat(detail + ''));
   };
 

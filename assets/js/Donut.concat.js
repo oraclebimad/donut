@@ -395,7 +395,7 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
     var previousData = this.path.data();
     var currentData = this.pie(this.data);
     var self = this;
-    var g;
+    var g = this.group.node();
 
     this.path = this.path.data(currentData, Donut.key);
     this.options.radius = Math.min(this.options.width, this.options.height) / 2;
@@ -414,7 +414,9 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
       .attrTween('d', function (d) {
         return arcTween(d, this, self);
       })
-      .remove();
+      .each('end', function () {
+        g.removeChild(this.parentNode);
+      });
 
     this.path.transition()
       .duration(550)
@@ -440,8 +442,7 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
       });
     }
 
-    text = (text + '').toLowerCase();
-    this.textLabel.text(text);
+    this.textLabel.text(Utils.capitalize(text));
     this.detailLabel.text(this.options.numericFormat(detail + ''));
   };
 
