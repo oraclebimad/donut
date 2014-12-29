@@ -69,7 +69,23 @@
     width: 400,
     height: 300,
     margin: {top: 5, left: 5, bottom: 0, right: 5},
-    colors: ['#f7fbff', '#deebf7', '#c6dbef'],
+    colors: [
+      '#EF4B68',
+      '#EFABDD',
+      '#E38BD3',
+      '#964296',
+      '#C8A8FD',
+      '#916AC0',
+      '#2F3490',
+      '#3F94B8',
+      '#94D4D8',
+      '#3080D5',
+      '#2F80D5',
+      '#6CC5EA',
+      '#227AE7',
+      '#24D0FD',
+      '#778DB3'
+    ],
     padding: {
       top: 0,
       right: 5,
@@ -118,49 +134,49 @@
     });
   };
 
-    Donut.prototype.setData = function (data) {
-      this.data = data;
-      return this;
-    };
+  Donut.prototype.setData = function (data) {
+    this.data = data;
+    return this;
+  };
 
-    Donut.prototype.setColors = function (colors) {
-      this.color =  d3.scale.ordinal().range(colors);
-      return this;
-    };
+  Donut.prototype.setColors = function (colors) {
+    this.color =  d3.scale.ordinal().range(colors);
+    return this;
+  };
 
-    Donut.prototype.render = function () {
-      var previousData = this.path.data();
-      var currentData = this.pie(this.data);
-      var self = this;
-      var g;
+  Donut.prototype.render = function () {
+    var previousData = this.path.data();
+    var currentData = this.pie(this.data);
+    var self = this;
+    var g;
 
-      this.path = this.path.data(currentData, Donut.key);
-      this.options.radius = Math.min(this.options.width, this.options.height) / 2;
-      this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 70);
-      this.path.enter().append('g').attr({
-        'class': 'arc'
-      }).append('path').attr('d', this.arc).style('fill', function (d, i) {
-        this._current = findNeighborArc(i, previousData, currentData, Donut.key) || d;
-        return self.color(d.data.size);
+    this.path = this.path.data(currentData, Donut.key);
+    this.options.radius = Math.min(this.options.width, this.options.height) / 2;
+    this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 50);
+    this.path.enter().append('g').attr({
+      'class': 'arc'
+    }).append('path').attr('d', this.arc).style('fill', function (d, i) {
+      this._current = findNeighborArc(i, previousData, currentData, Donut.key) || d;
+      return self.color(d.data.size);
+    });
+
+    this.path.exit().selectAll('path').datum(function (d, i) {
+      return findNeighborArc(i, previousData, currentData, Donut.key) || this.parentNode.__data__;
+    }).transition()
+      .duration(550)
+      .attrTween('d', function (d) {
+        return arcTween(d, this, self);
+      })
+      .remove();
+
+    this.path.transition()
+      .duration(550)
+      .select('path')
+      .attrTween('d', function (d) {
+        return arcTween(d, this, self);
       });
-
-      this.path.exit().selectAll('path').datum(function (d, i) {
-        return findNeighborArc(i, previousData, currentData, Donut.key) || this.parentNode.__data__;
-      }).transition()
-        .duration(550)
-        .attrTween('d', function (d) {
-          return arcTween(d, this, self);
-        })
-        .remove();
-
-      this.path.transition()
-        .duration(550)
-        .select('path')
-        .attrTween('d', function (d) {
-          return arcTween(d, this, self);
-        });
-      return this;
-    };
+    return this;
+  };
 
   Donut.prototype.toggleSelect = function (node) {
     var data = node.__data__;
@@ -168,6 +184,7 @@
     var container;
     node = d3.select(node);
     isSelected = !node.classed('selected');
+    this.group.classed('has-selected', isSelected);
     node.classed('selected', isSelected);
     if (isSelected) {
       this.addFilter(data.data);

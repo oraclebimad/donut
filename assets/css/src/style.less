@@ -1,0 +1,13 @@
+.arc path {
+  transition: opacity 500ms ease;
+}
+
+.has-selected {
+  .arc path {
+    opacity: .65;
+  }
+
+  .arc.selected path {
+    opacity: 1;
+  }
+}
