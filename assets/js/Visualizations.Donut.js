@@ -141,6 +141,7 @@
 
   Donut.prototype.setColors = function (colors) {
     this.color =  d3.scale.ordinal().range(colors);
+    this.color = d3.scale.category20();
     return this;
   };
 
@@ -151,7 +152,9 @@
     var totalRemoved = 0;
     var toBeRemoved = 0;
     var g = this.group.node();
+    var delay = 0;
 
+    this.group.classed('has-selected', false);
     this.path = this.path.data(currentData, Donut.key);
     this.options.radius = Math.min(this.options.width, this.options.height) / 2;
     this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 50);
@@ -163,6 +166,7 @@
     });
 
     toBeRemoved = this.path.exit().size();
+    delay = toBeRemoved > 0 ? 250 : 0;
 
     this.path.exit().selectAll('path').datum(function (d, i) {
       return findNeighborArc(i, previousData, currentData, Donut.key) || this.parentNode.__data__;
@@ -176,7 +180,8 @@
           self.path.exit().remove();
       });
 
-    this.path.transition()
+    this.path.classed('selected', false).transition()
+      .delay(delay)
       .duration(550)
       .select('path')
       .attrTween('d', function (d) {
