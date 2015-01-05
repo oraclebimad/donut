@@ -443,7 +443,8 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
     if (!this.textLabel) {
 
       this.textLabel = this.group.append('text').attr({
-        'class': 'label text'
+        'class': 'label text',
+        'dy': '-1.1em'
       });
 
       this.detailLabel = this.group.append('text').attr({

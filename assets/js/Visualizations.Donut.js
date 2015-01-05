@@ -196,7 +196,8 @@
     if (!this.textLabel) {
 
       this.textLabel = this.group.append('text').attr({
-        'class': 'label text'
+        'class': 'label text',
+        'dy': '-1.1em'
       });
 
       this.detailLabel = this.group.append('text').attr({
