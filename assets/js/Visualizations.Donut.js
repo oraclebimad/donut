@@ -148,17 +148,21 @@
     var previousData = this.path.data();
     var currentData = this.pie(this.data);
     var self = this;
+    var totalRemoved = 0;
+    var toBeRemoved = 0;
     var g = this.group.node();
 
     this.path = this.path.data(currentData, Donut.key);
     this.options.radius = Math.min(this.options.width, this.options.height) / 2;
     this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 50);
-    this.path.enter().append('g').attr({
+    this.path.enter().insert('g', 'text.text').attr({
       'class': 'arc'
     }).append('path').attr('d', this.arc).style('fill', function (d, i) {
       this._current = findNeighborArc(i, previousData, currentData, Donut.key) || d;
       return self.color(d.data.size);
     });
+
+    toBeRemoved = this.path.exit().size();
 
     this.path.exit().selectAll('path').datum(function (d, i) {
       return findNeighborArc(i, previousData, currentData, Donut.key) || this.parentNode.__data__;
@@ -168,7 +172,8 @@
         return arcTween(d, this, self);
       })
       .each('end', function () {
-        g.removeChild(this.parentNode);
+        if (++totalRemoved === toBeRemoved)
+          self.path.exit().remove();
       });
 
     this.path.transition()
