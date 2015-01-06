@@ -141,7 +141,6 @@
 
   Donut.prototype.setColors = function (colors) {
     this.color =  d3.scale.ordinal().range(colors);
-    this.color = d3.scale.category20();
     return this;
   };
 

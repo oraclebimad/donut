@@ -7,6 +7,11 @@
   properties: [
     {key: "width", label: "Width", type: "length", value: "320px"},
     {key: "height", label: "Height", type: "length", value: "300px"},
+    {key: "colors", label: "Color scheme", type: "lov", options: [
+      {label: 'Category A', value: 'a'},
+      {label: 'Category B', value: 'b'},
+      {label: 'Category C', value: 'c'}
+    ], value: 'a'},
     {key: "numberformat", label: "Numeric Format", type: "lov", options: [
       {label: 'Raw', value: 'raw'},
       {label: 'Currency', value: 'currency'},
@@ -33,6 +38,18 @@
     {name: "size", caption: "Drop Size Field Here", fieldType: "measure", dataType: "number", formula: "summation"},
   ],
   dataType: 'arrayOfArrays',
+  getColorScheme: function (scheme) {
+    var colors = {
+      'a': d3.scale.category20().range(),
+      'b': d3.scale.category20b().range(),
+      'b': d3.scale.category20c().range()
+    };
+
+    if (!(scheme in colors))
+      scheme = 'a';
+
+    return colors[scheme];
+  },
   render: function (context, container, data, fields, props) {
     var self = this;
     var columnMeta;
@@ -44,6 +61,7 @@
       width: props.width,
       height: props.height,
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.group.label,
+      colors: this.getColorScheme(props.colors),
       numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol})
     });
     this.visualization.render();
