@@ -156,7 +156,7 @@
     this.group.classed('has-selected', false);
     this.path = this.path.data(currentData, Donut.key);
     this.options.radius = Math.min(this.options.width, this.options.height) / 2;
-    this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 50);
+    this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 35);
     this.path.enter().insert('g', 'text.text').attr({
       'class': 'arc'
     }).append('path').attr('d', this.arc).style('fill', function (d, i) {
@@ -212,16 +212,22 @@
   Donut.prototype.toggleSelect = function (node) {
     var data = node.__data__;
     var isSelected;
+    var selected;
     var container;
     node = d3.select(node);
     isSelected = !node.classed('selected');
-    this.group.classed('has-selected', isSelected);
     node.classed('selected', isSelected);
-    if (isSelected) {
-      this.renderLabel(data.data.key, data.data.size);
+    selected = this.group.selectAll('g.selected');
+    this.group.classed('has-selected', selected.size() > 0);
+    if (isSelected)
       this.addFilter(data.data);
-    } else {
+    else
       this.removeFilter(data.data);
+
+    if (selected.size() === 1) {
+      data = selected.node().__data__;
+      this.renderLabel(data.data.key, data.data.size);
+    } else {
       this.renderLabel(this.options.groupLabel, d3.sum(Utils.pluck(this.data, 'size')));
     }
   };
@@ -266,14 +272,16 @@
     return this;
   };
 
-  Donut.prototype.clearFilters = function () {
+  Donut.prototype.clearFilters = function (silent) {
     var filters = [];
     var key;
     for (key in this.filters) {
       filters.push(this.filters[key]);
     }
+    silent = typeof sylent === 'boolean' ? sylent : false;
     this.filters = {};
-    this.trigger('remove-filter', [filters]);
+    if (!silent)
+      this.trigger('remove-filter', [filters]);
     return this;
   };
 

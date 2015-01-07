@@ -54,8 +54,8 @@
     var self = this;
     var columnMeta;
     container.innerHTML = '';
-    this.dataModel = new Utils.DataModel(data, fields);
-    this.dataModel.indexColumns().setColumnOrder(['group']);
+    window.d = this.dataModel = new Utils.DataModel(data, fields);
+    this.dataModel.indexColumns().setColumnOrder(['group']).sortBy('size').desc();
     columnMeta = this.dataModel.indexedMetaData;
     this.visualization = new Visualizations.Donut(container, this.dataModel.nest().values, {
       width: props.width,
@@ -80,9 +80,13 @@
     });
   },
   refresh: function (context, container, data, fields, props) {
-    var self = this;
-    this.dataModel.setData(data).indexColumns();
-    this.visualization.setData(this.dataModel.nest().values).render();
+    if (!this.avoidRefresh) {
+      var self = this;
+      this.dataModel.setData(data).indexColumns();
+      this.visualization.clearFilters();
+      this.visualization.setData(this.dataModel.nest().values).render();
+    }
+    this.avoidRefresh = false;
   },
   constructFilters: function (data, context) {
     var group = this.dataModel.indexedMetaData.group.field;
