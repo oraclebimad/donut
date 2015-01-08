@@ -514,6 +514,8 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
 
   Donut.prototype.toggleSelect = function (node) {
     var data = node.__data__;
+    var legendData;
+    var legend;
     var isSelected;
     var selected;
     var container;
@@ -522,17 +524,18 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
     node.classed('selected', isSelected);
     selected = this.group.selectAll('g.selected');
     this.group.classed('has-selected', selected.size() > 0);
+    //set filters
     if (isSelected)
       this.addFilter(data.data);
     else
       this.removeFilter(data.data);
 
-    if (selected.size() === 1) {
-      data = selected.node().__data__;
-      this.renderLabel(data.data.key, data.data.size);
-    } else {
-      this.renderLabel(this.options.groupLabel, d3.sum(Utils.pluck(this.data, 'size')));
-    }
+    //render the legend based on the selected data
+    legendData = selected.size() === 0 ? this.data : Utils.pluck(selected.data(), 'data');
+    legend = selected.size() === 1 ? legendData[0].key : this.options.groupLabel;
+    legendData = d3.sum(Utils.pluck(legendData, 'size'));
+    this.renderLabel(legend, legendData);
+    return this;
   };
 
   Donut.prototype.addFilter = function (group) {
