@@ -298,7 +298,8 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
   if (!('Utils' in main))
     main.Utils = {};
 
-  Utils.DataModel = DataModel;
+  if (!('DataModel' in main.Utils))
+    main.Utils.DataModel = DataModel;
 
 })(this);
 ;(function (main) {

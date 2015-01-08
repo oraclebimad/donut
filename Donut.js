@@ -54,7 +54,7 @@
     var self = this;
     var columnMeta;
     container.innerHTML = '';
-    window.d = this.dataModel = new Utils.DataModel(data, fields);
+    this.dataModel = new Utils.DataModel(data, fields);
     this.dataModel.indexColumns().setColumnOrder(['group']).sortBy('size').desc();
     columnMeta = this.dataModel.indexedMetaData;
     this.visualization = new Visualizations.Donut(container, this.dataModel.nest().values, {
