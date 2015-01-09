@@ -38,30 +38,52 @@
     {name: "size", caption: "Drop Size Field Here", fieldType: "measure", dataType: "number", formula: "summation"},
   ],
   dataType: 'arrayOfArrays',
-  getColorScheme: function (scheme) {
+  getColorScheme: function (scheme, dataLength) {
+    var scale = d3.scale;
     var colors = {
-      'a': d3.scale.category20().range(),
-      'b': d3.scale.category20b().range(),
-      'b': d3.scale.category20c().range()
+      'a': function (length) {
+        var colors = scale.category10().range();
+        if (length > colors.length)
+          colors = scale.category20().range();
+        return colors;
+      },
+      'b': function (length) {
+        var colors = scale.category10b().range();
+        if (length > colors.length)
+          colors = scale.category20b().range();
+        return colors;
+      },
+      'b': function (length) {
+        var colors = scale.category10c().range();
+        if (length > colors.length)
+          colors = scale.category20c().range();
+        return colors;
+      }
     };
 
     if (!(scheme in colors))
       scheme = 'a';
 
-    return colors[scheme];
+    console.log(dataLength);
+    if (isNaN(dataLength))
+      dataLength = 10;
+
+    return colors[scheme](dataLength);
   },
   render: function (context, container, data, fields, props) {
     var self = this;
     var columnMeta;
+    var nested;
     container.innerHTML = '';
     this.dataModel = new Utils.DataModel(data, fields);
     this.dataModel.indexColumns().setColumnOrder(['group']).sortBy('size').desc();
     columnMeta = this.dataModel.indexedMetaData;
-    this.visualization = new Visualizations.Donut(container, this.dataModel.nest().values, {
+    nested = this.dataModel.nest().values;
+    this.visualization = new Visualizations.Donut(container, nested, {
       width: props.width,
       height: props.height,
-      groupLabel: props.groupLabel ? props.groupLabel : columnMeta.group.label,
-      colors: this.getColorScheme(props.colors),
+      groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
+      colors: this.getColorScheme(props.colors, nested.length),
       numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol})
     });
     this.visualization.render();
