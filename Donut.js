@@ -1,22 +1,23 @@
 {
-  id: '03efcb62a28c.Donut',
+  id: "03efcb62a28c.Donut",
   component: {
-    'name': 'Donut Chart',
-    'tooltip': 'Insert Donut Chart'
+    "name": "Donut Chart",
+    "tooltip": "Insert Donut Chart"
   },
   properties: [
     {key: "width", label: "Width", type: "length", value: "320px"},
     {key: "height", label: "Height", type: "length", value: "300px"},
     {key: "colors", label: "Color scheme", type: "lov", options: [
-      {label: 'Category A', value: 'a'},
-      {label: 'Category B', value: 'b'},
-      {label: 'Category C', value: 'c'}
-    ], value: 'a'},
+      {label: "Category A", value: "a"},
+      {label: "Category B", value: "b"},
+      {label: "Category C", value: "c"},
+      {label: "Category D", value: "d"}
+    ], value: "d"},
     {key: "numberformat", label: "Numeric Format", type: "lov", options: [
-      {label: 'Raw', value: 'raw'},
-      {label: 'Currency', value: 'currency'},
-      {label: 'Thousands separated', value: 'thousands'}
-    ], value: 'thousands'},
+      {label: "Raw", value: "raw"},
+      {label: "Currency", value: "currency"},
+      {label: "Thousands separated", value: "thousands"}
+    ], value: "thousands"},
     {key: "currencysymbol", label: "Currency Symbol", type: "string", value: ""},
     {key: "grouplabel", label: "Label", type: "string", value: ""}
   ],
@@ -52,6 +53,29 @@
       },
       'c': function (length) {
         return scale.category20c().range();
+      },
+      'd': function (length) {
+        return [
+          '#ED5565',
+          '#FC6E51',
+          '#FFCE54',
+          '#A0D468',
+          '#48CFAD',
+          '#4FC1E9',
+          '#5D9CEC',
+          '#AC92EC',
+          '#EC87C0',
+          //middle
+          '#DA4453',
+          '#E9573F',
+          '#F6BB42',
+          '#8CC152',
+          '#37BC9B',
+          '#3BAFDA',
+          '#4A89DC',
+          '#967ADC',
+          '#D770AD'
+       ];
       }
     };
 
@@ -95,6 +119,7 @@
     });
   },
   refresh: function (context, container, data, fields, props) {
+    console.log('Refreshing donut', context.id);
     if (!this.avoidRefresh) {
       var self = this;
       this.dataModel.setData(data).indexColumns();
