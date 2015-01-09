@@ -48,23 +48,16 @@
         return colors;
       },
       'b': function (length) {
-        var colors = scale.category10b().range();
-        if (length > colors.length)
-          colors = scale.category20b().range();
-        return colors;
+        return scale.category20b().range();
       },
-      'b': function (length) {
-        var colors = scale.category10c().range();
-        if (length > colors.length)
-          colors = scale.category20c().range();
-        return colors;
+      'c': function (length) {
+        return scale.category20c().range();
       }
     };
 
     if (!(scheme in colors))
       scheme = 'a';
 
-    console.log(dataLength);
     if (isNaN(dataLength))
       dataLength = 10;
 
