@@ -3,6 +3,7 @@
   "private": true,
   "version": "1.0.1",
   "devDependencies": {
+    "orabimad-server": "1.*",
     "grunt": "~0.4.1",
     "connect": "~2.8.7",
     "grunt-contrib-watch": "0.5.3",
