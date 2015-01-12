@@ -153,8 +153,10 @@
     var g = this.group.node();
     var delay = 0;
 
+
     this.group.classed('has-selected', false);
     this.path = this.path.data(currentData, Donut.key);
+    //this.path = this.group.selectAll('g.arc').data(currentData, Donut.key);
     this.options.radius = Math.min(this.options.width, this.options.height) / 2;
     this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 35);
     this.path.enter().insert('g', 'text.text').attr({
@@ -173,11 +175,13 @@
       .duration(550)
       .attrTween('d', function (d) {
         return arcTween(d, this, self);
-      })
-      .each('end', function () {
-        if (++totalRemoved === toBeRemoved)
-          self.path.exit().remove();
-      });
+      }).remove();
+      //.each('end', function () {
+        //if (++totalRemoved === toBeRemoved) {
+          //console.log(self.path.exit());
+          //self.path.exit().remove();
+        //}
+      //});
 
     this.path.classed('selected', false).transition()
       .delay(delay)
@@ -281,7 +285,7 @@
     for (key in this.filters) {
       filters.push(this.filters[key]);
     }
-    silent = typeof sylent === 'boolean' ? sylent : false;
+    silent = typeof silent === 'boolean' ? silent : false;
     this.filters = {};
     if (!silent)
       this.trigger('remove-filter', [filters]);

@@ -87,49 +87,59 @@
 
     return colors[scheme](dataLength);
   },
+  instances: {},
   render: function (context, container, data, fields, props) {
     var self = this;
     var columnMeta;
     var nested;
+    var visualization;
+    var dataModel;
     container.innerHTML = '';
-    this.dataModel = new Utils.DataModel(data, fields);
-    this.dataModel.indexColumns().setColumnOrder(['group']).sortBy('size').desc();
-    columnMeta = this.dataModel.indexedMetaData;
-    nested = this.dataModel.nest().values;
-    this.visualization = new Visualizations.Donut(container, nested, {
+    dataModel = new Utils.DataModel(data, fields);
+    dataModel.indexColumns().setColumnOrder(['group']).sortBy('size').desc();
+    columnMeta = dataModel.indexedMetaData;
+    nested = dataModel.nest().values;
+    visualization = new Visualizations.Donut(container, nested, {
       width: props.width,
       height: props.height,
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
       colors: this.getColorScheme(props.colors, nested.length),
       numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol})
     });
-    this.visualization.render();
-    this.visualization.addEventListener('filter', function (filters) {
-      filters = self.constructFilters(filters, context);
+    visualization.render();
+    visualization.addEventListener('filter', function (filters) {
+      filters = self.constructFilters(filters, context, dataModel);
       xdo.api.handleClickEvent(filters);
       this.updateFilterInfo(filters.filter);
-      console.log(filters);
     }).addEventListener('remove-filter', function (filters) {
-      self.avoidRefresh = true;
+      self.avoidRefresh = context.id;
       filters.forEach(function (filter) {
         try{
              xdo.app.viewer.GlobalFilter.removeFilter(context.id, filter.id);
         } catch (e) {}
       });
     });
+    //instance manager
+    this.instances[context.id] = {
+      visualization: visualization,
+      dataModel: dataModel
+    };
+
   },
   refresh: function (context, container, data, fields, props) {
-    console.log('Refreshing donut', context.id);
-    if (!this.avoidRefresh) {
-      var self = this;
-      this.dataModel.setData(data).indexColumns();
-      this.visualization.clearFilters();
-      this.visualization.setData(this.dataModel.nest().values).render();
+    var instances = this.instances[context.id];
+    var nested;
+    if (instances && this.avoidRefresh !== context.id) {
+      instances.dataModel.setData(data).indexColumns();
+      nested  = instances.dataModel.nest().values;
+      instances.visualization.clearFilters(true);
+      instances.visualization.setData(nested).render();
+    } else {
+      this.avoidRefresh = false;
     }
-    this.avoidRefresh = false;
   },
-  constructFilters: function (data, context) {
-    var group = this.dataModel.indexedMetaData.group.field;
+  constructFilters: function (data, context, dataModel) {
+    var group = dataModel.indexedMetaData.group.field;
     var filters = [];
     var children;
     for (var key in data) {
@@ -137,7 +147,7 @@
     }
 
     return {
-      id: context.id,
+      id: +context.id,
       filter: filters
     };
   }
