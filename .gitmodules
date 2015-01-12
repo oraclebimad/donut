@@ -1,0 +1,3 @@
+[submodule "assets/js/Utils"]
+	path = assets/js/Utils
+	url = https://github.com/oraclebimad/plugin-utils.git
