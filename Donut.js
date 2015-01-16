@@ -106,7 +106,7 @@
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
       colors: this.getColorScheme(props.colors, nested.length),
       numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol}),
-      showSliceLabels: true//props.showlabels
+      showSliceLabels: props.showlabels
     });
     visualization.render();
     visualization.addEventListener('filter', function (filters) {
