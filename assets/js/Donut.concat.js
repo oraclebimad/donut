@@ -448,6 +448,32 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
     return this;
   };
 
+  Donut.prototype.calculateRadius = function () {
+    this.options.radius = Math.min(this.options.width, this.options.height) / 2;
+    return this;
+  };
+
+  Donut.prototype.getInnerRadius = function () {
+    var radius = this.options.radius;
+    var multiplier = 0.75;
+    if (this.options.showSliceLabels)
+      multiplier = 0.55;
+    return radius * multiplier;
+  };
+
+
+  Donut.prototype.getOuterRadius = function () {
+    var radius = this.options.radius;
+    var multiplier = 0.95;
+    if (this.options.showSliceLabels)
+      multiplier = 0.75;
+    return radius * multiplier;
+  };
+
+  Donut.prototype.getLabelRadius = function () {
+    return this.options.radius * 0.85;
+  };
+
   Donut.prototype.render = function () {
     var previousData = this.path.data();
     var currentData = this.pie(this.data);
@@ -458,12 +484,11 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
     var delay = 0;
 
 
+    this.calculateRadius();
     this.group.classed('has-selected', false);
     this.path = this.path.data(currentData, Donut.key);
-    //this.path = this.group.selectAll('g.arc').data(currentData, Donut.key);
-    this.options.radius = Math.min(this.options.width, this.options.height) / 2;
-    this.arc.outerRadius(this.options.radius - 10).innerRadius(this.options.radius - 35);
-    this.path.enter().insert('g', 'text.text').attr({
+    this.arc.outerRadius(this.getOuterRadius()).innerRadius(this.getInnerRadius());
+    this.path.enter().insert('g', 'g.labels').attr({
       'class': 'arc'
     }).append('path').attr('d', this.arc).style('fill', function (d, i) {
       this._current = findNeighborArc(i, previousData, currentData, Donut.key) || d;
@@ -480,12 +505,6 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
       .attrTween('d', function (d) {
         return arcTween(d, this, self);
       }).remove();
-      //.each('end', function () {
-        //if (++totalRemoved === toBeRemoved) {
-          //console.log(self.path.exit());
-          //self.path.exit().remove();
-        //}
-      //});
 
     this.path.classed('selected', false).transition()
       .delay(delay)
@@ -495,7 +514,89 @@ return i?u+i*(n[r]-u):u},Bo.median=function(t,e){return arguments.length>1&&(t=t
         return arcTween(d, this, self);
       });
 
+    this.renderSliceLabels(currentData);
+
     this.renderLabel(this.options.groupLabel, d3.sum(Utils.pluck(this.data, 'size')));
+    return this;
+  };
+
+  Donut.prototype.renderSliceLabels = function (data) {
+    if (!this.options.showSliceLabels)
+      return this;
+
+    this.group.select('g.labels').remove();
+    this.group.select('g.lines').remove();
+    this.labels = this.group.append('g').attr('class', 'labels');
+    this.lines = this.group.append('g').attr('class', 'lines');
+
+    var arcLength = function (d) {
+      return d.endAngle - d.startAngle;
+    };
+    var arc = d3.svg.arc();
+    var radius = this.getLabelRadius();
+    var outerRadius = this.getOuterRadius();
+    var self = this;
+    var lines = this.lines.selectAll('polyline').data(data, Donut.key);
+    var text = this.labels.selectAll('text').data(data, Donut.key);
+    var textMultiplier = 1;
+    arc.innerRadius(radius).outerRadius(radius);
+
+
+    text.enter().append('text').attr({
+      'dy': '.35em',
+      'transform': function (d) {
+        var pos = arc.centroid(d);
+        var length = arcLength(d);
+        pos[1] = 1.1 * pos[1];
+        if (length < 0.2) {
+          textMultiplier += 0.02;
+          pos[1] = pos[1] * textMultiplier;
+          pos[0] = self.options.radius * (length < Math.PI ? 1 : -1);
+        }
+        return 'translate(' + pos + ')';
+      },
+      'text-anchor': function (d) {
+        var length = d.startAngle - arcLength(d) / 2;
+        return length < Math.PI ? 'middle' : 'end';
+      }
+    }).text(function (d) {
+      var length = arcLength(d);
+      if (length < 0.2)
+        return '';
+      return d.data.key;
+    });
+    lines.enter().append('polyline').style({
+      'stroke': '#000',
+      'stroke-width': '1px',
+      'fill': 'none'
+    }).each(function (d) {
+      this._current = d;
+    });
+
+    var multiplier = 1;
+    lines.attr('points', function (d) {
+      var pos = arc.centroid(d);
+      var posClone;
+      var length = arcLength(d);
+      var points = [];
+      //if (length > 0.1) {
+         //multiplier += 0.04;
+         //pos[1] = pos[1] * multiplier;
+         //posClone = pos.slice();
+         //posClone[0] = outerRadius * 0.65;
+         //points.push(posClone);
+      //}
+      //
+      if (length > 0.2) {
+        points = [self.arc.centroid(d), pos];
+      }
+      return points;
+    });
+
+    text.exit().remove();
+
+    lines.exit().remove();
+
     return this;
   };
 

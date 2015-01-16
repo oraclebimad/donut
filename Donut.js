@@ -19,7 +19,8 @@
       {label: "Thousands separated", value: "thousands"}
     ], value: "thousands"},
     {key: "currencysymbol", label: "Currency Symbol", type: "string", value: ""},
-    {key: "grouplabel", label: "Label", type: "string", value: ""}
+    {key: "grouplabel", label: "Label", type: "string", value: ""},
+    {key: "showlabels", label: "Slice Labels", type: "bool", value: false}
   ],
   remoteFiles: [
     {
@@ -104,7 +105,8 @@
       height: props.height,
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
       colors: this.getColorScheme(props.colors, nested.length),
-      numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol})
+      numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol}),
+      showSliceLabels: true//props.showlabels
     });
     visualization.render();
     visualization.addEventListener('filter', function (filters) {
