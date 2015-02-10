@@ -144,6 +144,17 @@
     return this;
   };
 
+  Donut.prototype.setColorDomain = function () {
+    if (this.color) {
+      var domain = Utils.pluck(this.data, 'key');
+      domain = domain.sort(function (a, b) {
+        return a.localeCompare(b);
+      });
+      this.color.domain(domain);
+    }
+    return this;
+  };
+
   Donut.prototype.calculateRadius = function () {
     this.options.radius = Math.min(this.options.width, this.options.height) / 2;
     return this;
@@ -188,7 +199,7 @@
       'class': 'arc'
     }).append('path').attr('d', this.arc).style('fill', function (d, i) {
       this._current = findNeighborArc(i, previousData, currentData, Donut.key) || d;
-      return self.color(d.data.size);
+      return self.color(d.data.key);
     });
 
     toBeRemoved = this.path.exit().size();

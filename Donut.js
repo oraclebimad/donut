@@ -106,9 +106,9 @@
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
       colors: this.getColorScheme(props.colors, nested.length),
       numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol}),
-      showSliceLabels: props.showlabels
+      showSliceLabels: typeof props.showSliceLabels === 'boolean' ? props.showSliceLabels : props.showlabels === 'true'
     });
-    visualization.render();
+    visualization.setColorDomain().render();
     visualization.addEventListener('filter', function (filters) {
       filters = self.constructFilters(filters, context, dataModel);
       xdo.api.handleClickEvent(filters);
