@@ -2,7 +2,8 @@
   id: "03efcb62a28c.Donut",
   component: {
     "name": "Donut Chart",
-    "tooltip": "Insert Donut Chart"
+    "tooltip": "Insert Donut Chart",
+    "cssClass": 'donut-plugin'
   },
   properties: [
     {key: "width", label: "Width", type: "length", value: "320px"},
@@ -106,7 +107,7 @@
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
       colors: this.getColorScheme(props.colors, nested.length),
       numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol}),
-      showSliceLabels: typeof props.showSliceLabels === 'boolean' ? props.showSliceLabels : props.showlabels === 'true'
+      showSliceLabels: typeof props.showlabels === 'boolean' ? props.showlabels : props.showlabels === 'true'
     });
     visualization.setColorDomain().render();
     visualization.addEventListener('filter', function (filters) {
