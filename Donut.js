@@ -12,8 +12,9 @@
       {label: "Category A", value: "a"},
       {label: "Category B", value: "b"},
       {label: "Category C", value: "c"},
-      {label: "Category D", value: "d"}
-    ], value: "d"},
+      {label: "Category D", value: "d"},
+      {label: "Taucharts", value: "tau"},
+    ], value: "tau"},
     {key: "numberformat", label: "Number Format", type: "lov", options: [
       {label: "Raw", value: "raw"},
       {label: "Currency", value: "currency"},
@@ -78,6 +79,30 @@
           '#967ADC',
           '#D770AD'
        ];
+      },
+      'tau': function (length) {
+        return [
+         '#6FA1D9',
+         '#DF2B59',
+         '#66DA26',
+         '#4C3862',
+         '#E5B011',
+         '#3A3226',
+         '#CB461A',
+         '#C7CE23',
+         '#7FCDC2',
+         '#CCA1C8',
+         '#C84CCE',
+         '#54762E',
+         '#746BC9',
+         '#953441',
+         '#5C7A76',
+         '#C8BF87',
+         '#BFC1C3',
+         '#8E5C31',
+         '#71CE7B',
+         '#BE478B'
+        ];
       }
     };
 
@@ -96,17 +121,23 @@
     var nested;
     var visualization;
     var dataModel;
+    var format;
     container.innerHTML = '';
     dataModel = new Utils.DataModel(data, fields);
     dataModel.indexColumns().setColumnOrder(['group']).sortBy('size').desc();
     columnMeta = dataModel.indexedMetaData;
     nested = dataModel.nest().values;
+    if (xdo.api.format)
+      format = xdo.api.format(columnMeta.size.dataType, columnMeta.size.formatMask, columnMeta.size.formatStyle);
+    else
+      format = Utils.format(props.numberformat, {symbol: props.currencysymbol});
+
     visualization = new Visualizations.Donut(container, nested, {
       width: props.width,
       height: props.height,
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
       colors: this.getColorScheme(props.colors, nested.length),
-      numericFormat: Utils.format(props.numberformat, {symbol: props.currencysymbol}),
+      numericFormat: format,
       showSliceLabels: typeof props.showlabels === 'boolean' ? props.showlabels : props.showlabels === 'true'
     });
     visualization.setColorDomain().render();
