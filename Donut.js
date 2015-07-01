@@ -15,12 +15,6 @@
       {label: "Category D", value: "d"},
       {label: "Taucharts", value: "tau"},
     ], value: "tau"},
-    {key: "numberformat", label: "Number Format", type: "lov", options: [
-      {label: "Raw", value: "raw"},
-      {label: "Currency", value: "currency"},
-      {label: "Thousands separated", value: "thousands"}
-    ], value: "thousands"},
-    {key: "currencysymbol", label: "Currency Symbol", type: "string", value: ""},
     {key: "grouplabel", label: "Label", type: "string", value: ""},
     {key: "showlabels", label: "Slice Labels", type: "bool", value: false}
   ],
@@ -130,7 +124,7 @@
     if (xdo.api.format)
       format = xdo.api.format(columnMeta.size.dataType, columnMeta.size.formatMask, columnMeta.size.formatStyle);
     else
-      format = Utils.format(props.numberformat, {symbol: props.currencysymbol});
+      format = Utils.format('thousands');
 
     visualization = new Visualizations.Donut(container, nested, {
       width: props.width,
