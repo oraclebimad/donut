@@ -1,9 +1,10 @@
 {
-  id: "03efcb62a28c.Donut",
+  id: "com.oracle.bimad.Donut",
   component: {
     "name": "Donut Chart",
-    "tooltip": "Insert Donut Chart",
-    "cssClass": 'donut-plugin'
+    "tooltip": "Donut chart is a variation of Pie chart. It displays relevant information in the hole at the middle. This Donut chart is designed for smaller screens in mind.",
+    "cssClass": 'donut-plugin',
+    "icon": "asset://official-plugin.png"
   },
   properties: [
     {key: "width", label: "Width", type: "length", value: "1024px"},
