@@ -151,7 +151,6 @@
         return a.localeCompare(b);
       });
       this.color.domain(domain);
-      console.log(this.color.range(), domain);
     }
     return this;
   };
