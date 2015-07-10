@@ -11,15 +11,26 @@
     {key: "height", label: "Height", type: "length", value: "300px"},
     {key: "colors", label: "Color scheme", type: "lov", options: [
       {label: "Category A", value: "a"},
-      {label: "Category B", value: "b"},
-      {label: "Category C", value: "c"},
-      {label: "Category D", value: "d"},
-      {label: "Taucharts", value: "tau"},
-    ], value: "tau"},
+      {label: "Alta", value: "alta"},
+    ], value: "a"},
     {key: "grouplabel", label: "Label", type: "string", value: ""},
     {key: "showlabels", label: "Slice Labels", type: "bool", value: false}
   ],
   remoteFiles: [
+    {
+      type:'js',
+      location: '//cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js',
+      isLoaded: function() {
+        return ('d3' in window && d3.scale.alta);
+      }
+    },
+    {
+      type:'js',
+      location: 'asset://js/externals/d3-alta.js',
+      isLoaded: function() {
+        return ('d3' in window && d3.scale.alta);
+      }
+    },
     {
       type:'js',
       location: 'asset://js/Donut.concat.js',
@@ -46,58 +57,8 @@
           colors = scale.category20().range();
         return colors;
       },
-      'b': function (length) {
-        return scale.category20b().range();
-      },
-      'c': function (length) {
-        return scale.category20c().range();
-      },
-      'd': function (length) {
-        return [
-          '#ED5565',
-          '#FC6E51',
-          '#FFCE54',
-          '#A0D468',
-          '#48CFAD',
-          '#4FC1E9',
-          '#5D9CEC',
-          '#AC92EC',
-          '#EC87C0',
-          //middle
-          '#DA4453',
-          '#E9573F',
-          '#F6BB42',
-          '#8CC152',
-          '#37BC9B',
-          '#3BAFDA',
-          '#4A89DC',
-          '#967ADC',
-          '#D770AD'
-       ];
-      },
-      'tau': function (length) {
-        return [
-         '#6FA1D9',
-         '#DF2B59',
-         '#66DA26',
-         '#4C3862',
-         '#E5B011',
-         '#3A3226',
-         '#CB461A',
-         '#C7CE23',
-         '#7FCDC2',
-         '#CCA1C8',
-         '#C84CCE',
-         '#54762E',
-         '#746BC9',
-         '#953441',
-         '#5C7A76',
-         '#C8BF87',
-         '#BFC1C3',
-         '#8E5C31',
-         '#71CE7B',
-         '#BE478B'
-        ];
+      'alta': function () {
+        return scale.alta().range();
       }
     };
 
