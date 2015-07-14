@@ -3,6 +3,7 @@
   component: {
     "name": "Donut Chart",
     "tooltip": "Donut chart is a variation of Pie chart. It displays relevant information in the hole at the middle. This Donut chart is designed for smaller screens in mind.",
+    "description": "Donut chart is a variation of Pie chart. It displays relevant information in the hole at the middle. This Donut chart is designed for smaller screens in mind.",
     "cssClass": 'donut-plugin',
     "icon": "asset://official-plugin.png"
   },
@@ -10,7 +11,7 @@
     {key: "width", label: "Width", type: "length", value: "1024px"},
     {key: "height", label: "Height", type: "length", value: "300px"},
     {key: "colors", label: "Color scheme", type: "lov", options: [
-      {label: "Category A", value: "a"},
+      {label: "Default", value: "a"},
       {label: "Alta", value: "alta"},
     ], value: "a"},
     {key: "grouplabel", label: "Label", type: "string", value: ""},
