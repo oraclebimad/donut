@@ -21,14 +21,14 @@
       type:'js',
       location: '//cdnjs.cloudflare.com/ajax/libs/d3/3.5.2/d3.min.js',
       isLoaded: function() {
-        return ('d3' in window && d3.scale.alta);
+        return ('d3' in window);
       }
     },
     {
-      type:'js',
-      location: 'asset://js/externals/d3-alta.js',
+      type:"js",
+      location:"asset://js/Utils/bimad.scale.alta.js",
       isLoaded: function() {
-        return ('d3' in window && d3.scale.alta);
+        return ('bimad' in window && 'scale' in bimad && 'alta' in bimad.scale);
       }
     },
     {
@@ -58,7 +58,7 @@
         return colors;
       },
       'alta': function () {
-        return scale.alta().range();
+        return bimad.scale.alta().range();
       }
     };
 
@@ -79,14 +79,14 @@
     var dataModel;
     var format;
     container.innerHTML = '';
-    dataModel = new Utils.DataModel(data, fields);
+    dataModel = new bimad.utils.DataModel(data, fields);
     dataModel.indexColumns().setColumnOrder(['group']).sortBy('size').desc();
     columnMeta = dataModel.indexedMetaData;
     nested = dataModel.nest().values;
     if (xdo.api.format)
       format = xdo.api.format(columnMeta.size.dataType, columnMeta.size.formatMask, columnMeta.size.formatStyle);
     else
-      format = Utils.format('thousands');
+      format = bimad.utils.format('thousands');
 
     visualization = new Visualizations.Donut(container, nested, {
       width: props.width,

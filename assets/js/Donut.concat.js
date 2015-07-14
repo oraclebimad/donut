@@ -10,7 +10,7 @@
       };
     },
     currency: function (opts) {
-      opts = Utils.isObject(opts) ? opts : {};
+      opts = utils.isObject(opts) ? opts : {};
       if (!opts.symbol)
         opts.symbol = '$';
       var format = formats.thousands(opts);
@@ -20,7 +20,7 @@
     },
     thousands: function (opts) {
       var format = ',';
-      opts = Utils.isObject(opts) ? opts : {};
+      opts = utils.isObject(opts) ? opts : {};
       if (opts.decimals)
         format += '.2';
       if (opts.si)
@@ -43,13 +43,13 @@
       };
     }
   };
-  var Utils = {
+  var utils = {
     isDesigner: function () {
       return xdo && xdo.app && xdo.app.designer && xdo.app.designer.DesignerApplication;
     },
     proxy: function (fn, thisArg) {
       return function () {
-        return fn.apply(thisArg, Utils.toArray(arguments));
+        return fn.apply(thisArg, utils.toArray(arguments));
       };
     },
     toArray: function (obj) {
@@ -61,7 +61,7 @@
     deferred: jQuery.Deferred,
     pluck: function (data, key) {
       var values = [];
-      if (Utils.isArray(data)) {
+      if (utils.isArray(data)) {
         values = data.map(function (value) {
           return value[key];
         });
@@ -101,15 +101,18 @@
     extend: jQuery.extend
   };
 
-  if ('Utils' in main)
-    Utils = Utils.extend(Utils, main.Utils);
+  if (!('bimad' in main))
+    main.bimad = {};
 
-  main.Utils = Utils;
+  if ('utils' in main.bimad)
+    utils = utils.extend(utils, main.bimad.utils);
+
+  main.bimad.utils = utils;
 })(this);
 ;(function (main) {
   'use strict';
   /* jshint unused:true, jquery:true, curly:false */
-  /* global Utils */
+  /* global bimad */
 
   function getFieldName (field) {
     var last;
@@ -164,10 +167,10 @@
    * @param metadata Array Column metadata
    */
   var DataModel = function (data, metadata) {
-     if (Utils.isArray(data))
+     if (bimad.utils.isArray(data))
        this.setData(data);
 
-     if (Utils.isArray(metadata))
+     if (bimad.utils.isArray(metadata))
        this.setColumnMetadata(metadata);
 
      this.sort = {
@@ -253,7 +256,7 @@
     nestExtras = typeof nestExtras === 'boolean' ? nestExtras : true;
     var columnOrder = [];
     var extraColumns = nestExtras ? this.metaData.slice() : [];
-    if (!Utils.isArray(columns))
+    if (!bimad.utils.isArray(columns))
       columns = [];
 
     if (columns.length > 0) {
@@ -287,7 +290,7 @@
    * @returns DataModel
    */
   DataModel.prototype.asc = function () {
-    this.sort.comparator = Utils.ascending;
+    this.sort.comparator = bimad.utils.ascending;
     return this;
   };
 
@@ -296,7 +299,7 @@
    * @returns DataModel
    */
   DataModel.prototype.desc = function () {
-    this.sort.comparator = Utils.descending;
+    this.sort.comparator = bimad.utils.descending;
     return this;
   };
 
@@ -384,18 +387,18 @@
   };
 
   function sort (data, key, order) {
-    if (!Utils.isArray(data))
+    if (!bimad.utils.isArray(data))
       return false;
 
     if (typeof order !== 'function')
-      order = Utils.descending;
+      order = bimad.utils.descending;
 
     data.sort(function (nodeA, nodeB) {
       return order(nodeA[key], nodeB[key]);
     });
 
     //means we have a hierarchical data of more than one level of depth
-    if (Utils.isArray(data[0].values)) {
+    if (bimad.utils.isArray(data[0].values)) {
       data.forEach(function (node) {
         sort(node.values, key, order);
       });
@@ -405,8 +408,8 @@
   }
 
   function accumulate (node, key) {
-    if (Utils.isObject(node) && !Utils.isEmptyObject(node)) {
-      return (Utils.isArray(node.values)) ?
+    if (bimad.utils.isObject(node) && !bimad.utils.isEmptyObject(node)) {
+      return (bimad.utils.isArray(node.values)) ?
         node[key] = node.values.reduce(function (prev, value) {
           return prev + accumulate(value, key);
         }, 0) :
@@ -415,7 +418,7 @@
   }
 
   function postProcess (data, columns) {
-    if (data.values && Utils.isArray(data.values)) {
+    if (data.values && bimad.utils.isArray(data.values)) {
       var valuesLength = data.values.length;
       var column = columns.shift();
       data.values.forEach(function (node, index) {
@@ -428,11 +431,14 @@
     }
   }
 
-  if (!('Utils' in main))
-    main.Utils = {};
+  if (!('bimad' in main))
+    main.bimad = {};
 
-  if (!('DataModel' in main.Utils))
-    main.Utils.DataModel = DataModel;
+  if (!('utils' in main.bimad))
+    main.bimad.utils = {};
+
+  if (!('DataModel' in main.bimad.utils))
+    main.bimad.utils.DataModel = DataModel;
 
 })(this);
 ;(function (main) {
@@ -583,7 +589,7 @@
 
   Donut.prototype.setColorDomain = function () {
     if (this.color) {
-      var domain = Utils.pluck(this.data, 'key');
+      var domain = bimad.utils.pluck(this.data, 'key');
       domain = domain.sort(function (a, b) {
         return a.localeCompare(b);
       });
@@ -660,7 +666,7 @@
 
     this.renderSliceLabels(currentData);
 
-    this.renderLabel(this.options.groupLabel, d3.sum(Utils.pluck(this.data, 'size')));
+    this.renderLabel(this.options.groupLabel, d3.sum(bimad.utils.pluck(this.data, 'size')));
     return this;
   };
 
@@ -758,7 +764,7 @@
       });
     }
 
-    this.textLabel.text(Utils.capitalize(text));
+    this.textLabel.text(bimad.utils.capitalize(text));
     this.detailLabel.text(this.options.numericFormat(detail + ''));
   };
 
@@ -781,9 +787,9 @@
       this.removeFilter(data.data);
 
     //render the legend based on the selected data
-    legendData = selected.size() === 0 ? this.data : Utils.pluck(selected.data(), 'data');
+    legendData = selected.size() === 0 ? this.data : bimad.utils.pluck(selected.data(), 'data');
     legend = selected.size() === 1 ? legendData[0].key : this.options.groupLabel;
-    legendData = d3.sum(Utils.pluck(legendData, 'size'));
+    legendData = d3.sum(bimad.utils.pluck(legendData, 'size'));
     this.renderLabel(legend, legendData);
     return this;
   };
@@ -798,7 +804,7 @@
   };
 
   Donut.prototype.updateFilterInfo = function (filters) {
-    if (!Utils.isArray(filters))
+    if (!bimad.utils.isArray(filters))
       return this;
 
     var self = this;

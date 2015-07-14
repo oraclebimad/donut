@@ -146,7 +146,7 @@
 
   Donut.prototype.setColorDomain = function () {
     if (this.color) {
-      var domain = Utils.pluck(this.data, 'key');
+      var domain = bimad.utils.pluck(this.data, 'key');
       domain = domain.sort(function (a, b) {
         return a.localeCompare(b);
       });
@@ -223,7 +223,7 @@
 
     this.renderSliceLabels(currentData);
 
-    this.renderLabel(this.options.groupLabel, d3.sum(Utils.pluck(this.data, 'size')));
+    this.renderLabel(this.options.groupLabel, d3.sum(bimad.utils.pluck(this.data, 'size')));
     return this;
   };
 
@@ -321,7 +321,7 @@
       });
     }
 
-    this.textLabel.text(Utils.capitalize(text));
+    this.textLabel.text(bimad.utils.capitalize(text));
     this.detailLabel.text(this.options.numericFormat(detail + ''));
   };
 
@@ -344,9 +344,9 @@
       this.removeFilter(data.data);
 
     //render the legend based on the selected data
-    legendData = selected.size() === 0 ? this.data : Utils.pluck(selected.data(), 'data');
+    legendData = selected.size() === 0 ? this.data : bimad.utils.pluck(selected.data(), 'data');
     legend = selected.size() === 1 ? legendData[0].key : this.options.groupLabel;
-    legendData = d3.sum(Utils.pluck(legendData, 'size'));
+    legendData = d3.sum(bimad.utils.pluck(legendData, 'size'));
     this.renderLabel(legend, legendData);
     return this;
   };
@@ -361,7 +361,7 @@
   };
 
   Donut.prototype.updateFilterInfo = function (filters) {
-    if (!Utils.isArray(filters))
+    if (!bimad.utils.isArray(filters))
       return this;
 
     var self = this;
