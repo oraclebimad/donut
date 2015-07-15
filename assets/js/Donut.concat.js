@@ -569,14 +569,16 @@
     this.pie.sort(null).value(function (d) { return d.size; });
 
     this.setColors(this.options.colors);
-    svg.addEventListener('click', function (event) {
-      var target = $(event.target || event.srcElement);
-      var selector = 'g.arc';
-      var path = target.is(selector) ? target : target.parents(selector);
+    if (!bimad.utils.isDesigner()) {
+      svg.addEventListener('click', function (event) {
+        var target = $(event.target || event.srcElement);
+        var selector = 'g.arc';
+        var path = target.is(selector) ? target : target.parents(selector);
 
-      if (path.length)
-        self.toggleSelect(path[0]);
-    });
+        if (path.length)
+          self.toggleSelect(path[0]);
+      });
+    }
   };
 
   Donut.prototype.setData = function (data) {
