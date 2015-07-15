@@ -10,10 +10,18 @@
   properties: [
     {key: "width", label: "Width", type: "length", value: "1024px"},
     {key: "height", label: "Height", type: "length", value: "300px"},
-    {key: "colors", label: "Color scheme", type: "lov", options: [
+    {key: "colors", label: "Color Scheme", type: "lov", options: [
       {label: "Default", value: "a"},
       {label: "Alta", value: "alta"},
-    ], value: "a"},
+    ], value: "default"},
+    {key: "sortColorBy", label: "Sort Color By", type: "lov", options: [
+      {label: "Measure", value: "size"},
+      {label: "Label", value: "key"}
+    ], value: "size"},
+    {key: "sortColorOrder", label: "Sort Color Order", type: "lov", options: [
+      {label: "Descending", value: "descending"},
+      {label: "Ascending", value: "ascending"}
+    ], value: "descending"},
     {key: "grouplabel", label: "Label", type: "string", value: ""},
     {key: "showlabels", label: "Slice Labels", type: "bool", value: false}
   ],
@@ -95,6 +103,8 @@
       groupLabel: props.groupLabel ? props.groupLabel : columnMeta.size.label,
       colors: this.getColorScheme(props.colors, nested.length),
       numericFormat: format,
+      sortColorOrder: props.sortColorOrder,
+      sortColorBy: props.sortColorBy,
       showSliceLabels: typeof props.showlabels === 'boolean' ? props.showlabels : props.showlabels === 'true'
     });
     visualization.setColorDomain().render();

@@ -536,7 +536,9 @@
       left: 5
     },
     sizeFormat: 'currency',
-    colorLabel: ''
+    colorLabel: '',
+    sortColorBy: 'size',
+    sortColorOrder: 'descending'
   };
 
   Donut.prototype.init = function () {
@@ -589,11 +591,15 @@
 
   Donut.prototype.setColorDomain = function () {
     if (this.color) {
-      var domain = bimad.utils.pluck(this.data, 'key');
-      domain = domain.sort(function (a, b) {
-        return a.localeCompare(b);
+      var domain = this.data.map(function (node) {
+        return {key: node.key, size: node.size};
       });
-      this.color.domain(domain);
+      var sortOrder = this.options.sortColorOrder;
+      var sortBy = this.options.sortColorBy;
+      domain = domain.sort(function (a, b) {
+        return bimad.utils[sortOrder](a[sortBy], b[sortBy]);
+      });
+      this.color.domain(domain.map(function (node) { return node.key; }));
     }
     return this;
   };
