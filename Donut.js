@@ -54,7 +54,7 @@
   ],
   fields: [
     {name: "group", caption: "Drop Main Group Field Here", fieldType: "label", dataType: "string"},
-    {name: "size", caption: "Drop Size Field Here", fieldType: "measure", dataType: "number", formula: "summation"},
+    {name: "size", caption: "Drop Size Field Here", fieldType: "measure", dataType: "number", formula: "summation", formatMask: '#,###'}
   ],
   dataType: 'arrayOfArrays',
   getColorScheme: function (scheme, dataLength) {
