@@ -120,10 +120,17 @@
       height: this.options.height
     });
 
+
+    var sortOrder = this.options.sortColorOrder;
+    var sortBy = this.options.sortColorBy;
+    this.comparator = function (a, b) {
+      return bimad.utils[sortOrder](a[sortBy], b[sortBy]);
+    };
+
     this.path = this.group.selectAll('g.arc');
     this.pie = d3.layout.pie();
     this.arc = d3.svg.arc();
-    this.pie.sort(null).value(function (d) { return d.size; });
+    this.pie.sort(this.comparator).value(function (d) { return d.size; });
 
     this.setColors(this.options.colors);
     if (!bimad.utils.isDesigner()) {
@@ -136,6 +143,7 @@
           self.toggleSelect(path[0]);
       });
     }
+
   };
 
   Donut.prototype.setData = function (data) {
@@ -153,11 +161,7 @@
       var domain = this.data.map(function (node) {
         return {key: node.key, size: node.size};
       });
-      var sortOrder = this.options.sortColorOrder;
-      var sortBy = this.options.sortColorBy;
-      domain = domain.sort(function (a, b) {
-        return bimad.utils[sortOrder](a[sortBy], b[sortBy]);
-      });
+      domain = domain.sort(this.comparator);
       this.color.domain(domain.map(function (node) { return node.key; }));
     }
     return this;

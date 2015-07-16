@@ -13,12 +13,12 @@
     {key: "colors", label: "Color Scheme", type: "lov", options: [
       {label: "Default", value: "a"},
       {label: "Alta", value: "alta"},
-    ], value: "default"},
-    {key: "sortColorBy", label: "Sort Color By", type: "lov", options: [
+    ], value: "a"},
+    {key: "sortColorBy", label: "Sort By", type: "lov", options: [
       {label: "Measure", value: "size"},
       {label: "Label", value: "key"}
     ], value: "size"},
-    {key: "sortColorOrder", label: "Sort Color Order", type: "lov", options: [
+    {key: "sortColorOrder", label: "Sort Order", type: "lov", options: [
       {label: "Descending", value: "descending"},
       {label: "Ascending", value: "ascending"}
     ], value: "descending"},
